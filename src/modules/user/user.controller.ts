@@ -3,11 +3,15 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
+import EmailService from '@app/shared/mail/mail.service';
+import { contactUsTemplate } from '@app/shared/mail/template/contact-us.template';
 
 @ApiTags('User')
 @Controller({ version: '1' })
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+    private readonly mailService: EmailService
+  ) {}
 
   @Post()
   @ApiOperation({ description: 'Create user via contact us' })
@@ -15,6 +19,12 @@ export class UserController {
   async create(@Body() dto: UserDto) {
     try {
       const newUser = await this.userService.create(dto);
+        await this.mailService.sendMail({
+            from: 'spendwise@gmail.com',
+            to: dto.email,
+            subject: 'Contact Confirmation',
+            html: contactUsTemplate(newUser.email),
+        })
       return {
         _data: newUser,
         _metadata: {
