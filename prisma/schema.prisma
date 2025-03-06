@@ -4,17 +4,35 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = ""
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        String  @id @default(uuid())
+  name      String
+  phone     String 
+  email     String
+  companyName   String @map("company_name")
+  country String 
+  jobTitle String @map("job_title")
+  jobDetail String @map("job_detail")
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
-model Author {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Admin {
+  id        String  @id @default(uuid())
+  name      String
+  email     String  @unique
+  password  String 
+
+  isDeleted Boolean @default(false)
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("admins")
 }

@@ -19,7 +19,7 @@ export function createDocument(app: INestApplication) {
   const password = configService.get<string>('swagger.password') ?? 'password';
   const appMode = configService.get<string>('app.mode');
   // console.log(appMode)
-  if (appMode !== 'development') {
+  if (appMode !== 'production') {
     app.use(
       '/docs',
       basicAuth({
