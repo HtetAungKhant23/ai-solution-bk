@@ -18,7 +18,7 @@ export class AdminAuthGuard extends AuthGuard('admin') {
         description: 'Invalid or Expire token',
       });
     }
-    
+
     return admin;
   }
 }
