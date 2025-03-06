@@ -1,16 +1,15 @@
-import { PrismaService } from "@app/shared/prisma/prisma.service";
-import { Injectable } from "@nestjs/common";
+import { PrismaService } from '@app/shared/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class adminService{
-    constructor(private readonly dbService: PrismaService){}
+export class AdminService {
+  constructor(private readonly dbService: PrismaService) {}
 
-    async getAllUserInquries(){
-        return this.dbService.user.findMany({
-            orderBy: {
-                createdAt: 'desc'
-            }
-        })
-    }
-
+  async getAllUserInquries() {
+    return this.dbService.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }
