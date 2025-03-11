@@ -1,8 +1,8 @@
 import { PrismaService } from '@app/shared/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { EventDto } from './dto/event.dto';
 import * as dayjs from 'dayjs';
 import { EVENT_STATUS } from '@prisma/client';
+import { EventDto } from './dto/event.dto';
 
 @Injectable()
 export class AdminService {
@@ -24,7 +24,7 @@ export class AdminService {
     });
   }
 
-  async createEvent(dto: EventDto, creatorId: string){
+  async createEvent(dto: EventDto, creatorId: string) {
     return this.dbService.event.create({
       data: {
         name: dto.name,
@@ -33,19 +33,20 @@ export class AdminService {
         endDate: dayjs(dto.endDate).endOf('d').toISOString(),
         createdById: creatorId,
         organization: dto.organization,
-        status: await this.getEventStatusViaDate(dto.startDate, dayjs(dto.endDate).endOf('d').toDate())
-      }
-    })
+        status: await this.getEventStatusViaDate(dto.startDate, dayjs(dto.endDate).endOf('d').toDate()),
+      },
+    });
   }
 
-  private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS>{
+  private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS> {
     const isOngoing = dayjs().isAfter(startDate) && dayjs().isBefore(endDate);
-    const isPrevious = dayjs().isAfter(endDate)
+    const isPrevious = dayjs().isAfter(endDate);
 
-    if(isOngoing){
-      return EVENT_STATUS.ONGOING
-    }else if(isPrevious){
-      return EVENT_STATUS.PREVIOUS
+    if (isOngoing) {
+      return EVENT_STATUS.ONGOING;
+    }
+    if (isPrevious) {
+      return EVENT_STATUS.PREVIOUS;
     }
 
     return EVENT_STATUS.UPCOMING;

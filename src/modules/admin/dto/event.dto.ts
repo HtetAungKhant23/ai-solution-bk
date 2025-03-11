@@ -5,12 +5,12 @@ export class EventDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  name: string
+  name: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  detail: string
+  detail: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -25,7 +25,7 @@ export class EventDto {
   @IsString()
   organization: string;
 
-  @ApiProperty({required: false, type: 'string', format: 'binary'})
+  @ApiProperty({ required: false, type: 'string', format: 'binary' })
   @IsOptional()
   images?: any;
 }

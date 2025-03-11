@@ -9,7 +9,7 @@ import { EventDto } from './dto/event.dto';
 @ApiTags('Admin')
 @Controller({ version: '1' })
 export class AdminController {
-  constructor(private readonly adminService: AdminService) { }
+  constructor(private readonly adminService: AdminService) {}
 
   @Get('me')
   @ApiBearerAuth()
