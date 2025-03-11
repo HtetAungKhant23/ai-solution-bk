@@ -35,4 +35,19 @@ export class UserService {
       },
     });
   }
+
+  async getAllEvents() {
+    return this.dbService.event.findMany({
+      where: {
+        isDeleted: false,
+      },
+      include: {
+        files: {
+          select: {
+            path: true,
+          },
+        },
+      },
+    });
+  }
 }
