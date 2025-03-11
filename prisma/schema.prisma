@@ -8,33 +8,74 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  name      String
-  phone     String 
-  email     String
-  companyName   String @map("company_name")
-  country String 
-  jobTitle String @map("job_title")
-  jobDetail String @map("job_detail")
-  rating Int @default(0)
-  ratingDesc String?
+  id          String  @id @default(uuid())
+  name        String
+  phone       String
+  email       String
+  companyName String  @map("company_name")
+  country     String
+  jobTitle    String  @map("job_title")
+  jobDetail   String  @map("job_detail")
+  rating      Int     @default(0)
+  ratingDesc  String?
 
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Admin {
-  id        String  @id @default(uuid())
-  name      String
-  email     String  @unique
-  password  String 
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
 
   isDeleted Boolean @default(false)
 
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  events    Event[]
 
   @@map("admins")
+}
+
+model Event {
+  id            String       @id @default(uuid())
+  name          String
+  detail        String
+  startDate     DateTime     @map("start_date")
+  endDate       DateTime     @map("end_date")
+  status        EVENT_STATUS @default(UPCOMING)
+  organization String
+  createdById   String
+  createdBy     Admin        @relation(fields: [createdById], references: [id])
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  files     File[]
+
+  @@map("events")
+}
+
+model File {
+  id      String @id @default(uuid())
+  path    String
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("files")
+}
+
+enum EVENT_STATUS {
+  PREVIOUS
+  ONGOING
+  UPCOMING
 }
