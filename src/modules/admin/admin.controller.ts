@@ -2,19 +2,20 @@ import { BadRequestException, Body, Controller, Get, HttpStatus, Post, UploadedF
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentAdmin, IAuthAdmin } from '@app/core/decorators/auth.decorators';
-import { AdminService } from './admin.service';
-import { AdminAuthGuard } from '../auth/guard/admin.guard';
-import { EventDto } from './dto/event.dto';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import {diskStorage} from 'multer';
-import {v4 as uuidv4} from 'uuid';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
+import { EventDto } from './dto/event.dto';
+import { AdminAuthGuard } from '../auth/guard/admin.guard';
+import { AdminService } from './admin.service';
 
 @ApiTags('Admin')
 @Controller({ version: '1' })
 export class AdminController {
-  constructor(private readonly adminService: AdminService,
-    private readonly cloudinaryService: CloudinaryService
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   @Get('me')
@@ -82,9 +83,9 @@ export class AdminController {
   )
   async createEvent(@Body() dto: EventDto, @UploadedFile() file: Express.Multer.File, @CurrentAdmin() admin: IAuthAdmin) {
     try {
-      let path = undefined;
-      if(file){
-        path = await this.cloudinaryService.uploadImage(file.path, 'event')
+      let path;
+      if (file) {
+        path = await this.cloudinaryService.uploadImage(file.path, 'event');
       }
       const newEvent = await this.adminService.createEvent(dto, admin.id, path || undefined);
       return {

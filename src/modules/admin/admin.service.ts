@@ -6,7 +6,7 @@ import { EventDto } from './dto/event.dto';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly dbService: PrismaService) { }
+  constructor(private readonly dbService: PrismaService) {}
 
   async getMe(id: string) {
     return this.dbService.admin.findUnique({
@@ -25,7 +25,7 @@ export class AdminService {
   }
 
   async createEvent(dto: EventDto, creatorId: string, imgPath: any) {
-    console.log({imgPath})
+    console.log({ imgPath });
     return this.dbService.event.create({
       data: {
         name: dto.name,
@@ -39,9 +39,9 @@ export class AdminService {
           files: {
             create: {
               path: imgPath,
-            }
-          }
-        })
+            },
+          },
+        }),
       },
     });
   }
