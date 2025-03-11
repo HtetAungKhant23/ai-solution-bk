@@ -1,15 +1,21 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentAdmin, IAuthAdmin } from '@app/core/decorators/auth.decorators';
 import { AdminService } from './admin.service';
 import { AdminAuthGuard } from '../auth/guard/admin.guard';
 import { EventDto } from './dto/event.dto';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
+import {diskStorage} from 'multer';
+import {v4 as uuidv4} from 'uuid';
+import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
 
 @ApiTags('Admin')
 @Controller({ version: '1' })
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   @Get('me')
   @ApiBearerAuth()
@@ -61,11 +67,26 @@ export class AdminController {
   @Post('event')
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ description: 'Create event' })
   @ApiBody({ type: EventDto })
-  async createEvent(@Body() dto: EventDto, @CurrentAdmin() admin: IAuthAdmin) {
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_, file, cb) => {
+          return cb(null, `${uuidv4()}.${file.originalname}`);
+        },
+      }),
+    }),
+  )
+  async createEvent(@Body() dto: EventDto, @UploadedFile() file: Express.Multer.File, @CurrentAdmin() admin: IAuthAdmin) {
     try {
-      const newEvent = await this.adminService.createEvent(dto, admin.id);
+      let path = undefined;
+      if(file){
+        path = await this.cloudinaryService.uploadImage(file.path, 'event')
+      }
+      const newEvent = await this.adminService.createEvent(dto, admin.id, path || undefined);
       return {
         _data: newEvent,
         _metadata: {

@@ -27,5 +27,5 @@ export class EventDto {
 
   @ApiProperty({ required: false, type: 'string', format: 'binary' })
   @IsOptional()
-  images?: any;
+  image: any;
 }
