@@ -19,4 +19,20 @@ export class UserService {
       },
     });
   }
+
+  async getAllRatings(){
+    return this.dbService.user.findMany();
+  }
+
+  async createRating(userId: string, rating: number, description: string){
+    return this.dbService.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        rating: rating,
+        ratingDesc: description
+      }
+    })
+  }
 }

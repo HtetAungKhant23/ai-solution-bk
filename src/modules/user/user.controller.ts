@@ -1,10 +1,11 @@
-import { BadRequestException, Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import EmailService from '@app/shared/mail/mail.service';
 import { contactUsTemplate } from '@app/shared/mail/template/contact-us.template';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
+import { RatingDto } from './dto/rating.dto';
 
 @ApiTags('User')
 @Controller({ version: '1' })
@@ -39,6 +40,51 @@ export class UserController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to save new user.',
+      });
+    }
+  }
+
+  @Get('ratings')
+  @ApiOperation({ description: 'Get all user ratings' })
+  async getAllRatings() {
+    try {
+      const userRatings = await this.userService.getAllRatings();
+      return {
+        _data: userRatings,
+        _metadata: {
+          message: 'All ratings successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to get all user ratings.',
+      });
+    }
+  }
+
+  @Post('rating')
+  @ApiOperation({ description: 'Give rating' })
+  @ApiBody({ type: RatingDto })
+  async createRating(@Body() dto: RatingDto) {
+    try {
+      const rating = await this.userService.createRating(dto.userId, dto.rating, dto.desc);
+      return {
+        _data: rating,
+        _metadata: {
+          message: 'Rating saved successfully.',
+          statusCode: HttpStatus.CREATED,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to save new rating.',
       });
     }
   }

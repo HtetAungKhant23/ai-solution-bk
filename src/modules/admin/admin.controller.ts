@@ -35,7 +35,7 @@ export class AdminController {
 
   @Get('user-inquries')
   @ApiBearerAuth()
-  @UseGuards(AdminAuthGuard)
+  // @UseGuards(AdminAuthGuard)
   @ApiProperty({ description: 'Get All User Inquries' })
   async getAllUserInquries() {
     try {
