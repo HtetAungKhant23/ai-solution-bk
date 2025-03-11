@@ -6,6 +6,8 @@ import { contactUsTemplate } from '@app/shared/mail/template/contact-us.template
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { RatingDto } from './dto/rating.dto';
+import { ChatbotService } from '@app/shared/chatbot/chatbot.service';
+import { ChatDto } from './dto/chat.dto';
 
 @ApiTags('User')
 @Controller({ version: '1' })
@@ -13,7 +15,8 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly mailService: EmailService,
-  ) {}
+    private readonly chatbotService: ChatbotService,
+  ) { }
 
   @Post()
   @ApiOperation({ description: 'Create user via contact us' })
@@ -109,5 +112,14 @@ export class UserController {
         description: 'Failed to fetch events.',
       });
     }
+  }
+
+  @Post('ask')
+  @ApiOperation({ description: 'User ask to chat bot' })
+  @ApiBody({ type: ChatDto })
+  async askChatbot(@Body() dto: ChatDto) {
+    const response = await this.chatbotService.getChatbotResponse(dto.message);
+    console.log({ response });
+    return { reply: response };
   }
 }
