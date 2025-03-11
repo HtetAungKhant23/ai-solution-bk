@@ -104,4 +104,28 @@ export class AdminController {
       });
     }
   }
+
+  @Get('events')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Get All Events' })
+  async getAllEvents() {
+    try {
+      const events = await this.adminService.getAllEvents();
+      return {
+        _data: events,
+        _metadata: {
+          message: 'Events successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch events.',
+      });
+    }
+  }
 }

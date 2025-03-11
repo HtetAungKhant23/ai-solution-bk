@@ -46,6 +46,21 @@ export class AdminService {
     });
   }
 
+  async getAllEvents(){
+    return this.dbService.event.findMany({
+      where: {
+        isDeleted: false
+      },
+      include: {
+        files: {
+          select: {
+            path: true
+          }
+        }
+      }
+    })
+  }
+
   private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS> {
     const isOngoing = dayjs().isAfter(startDate) && dayjs().isBefore(endDate);
     const isPrevious = dayjs().isAfter(endDate);
