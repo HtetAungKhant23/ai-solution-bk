@@ -61,15 +61,15 @@ export class AdminService {
     });
   }
 
-  async deleteEvent(id: string){
+  async deleteEvent(id: string) {
     return this.dbService.event.update({
       where: {
-        id
+        id,
       },
       data: {
         isDeleted: true,
-      }
-    })
+      },
+    });
   }
 
   private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS> {

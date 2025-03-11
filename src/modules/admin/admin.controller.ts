@@ -1,4 +1,16 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentAdmin, IAuthAdmin } from '@app/core/decorators/auth.decorators';
@@ -16,7 +28,7 @@ export class AdminController {
   constructor(
     private readonly adminService: AdminService,
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
   @Get('me')
   @ApiBearerAuth()
