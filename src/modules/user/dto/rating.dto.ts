@@ -6,14 +6,14 @@ export class RatingDto {
   @IsNotEmpty()
   @IsString()
   userId: string;
-  
+
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   rating: number;
-  
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  desc: string
+  desc: string;
 }
