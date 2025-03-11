@@ -46,19 +46,19 @@ export class AdminService {
     });
   }
 
-  async getAllEvents(){
+  async getAllEvents() {
     return this.dbService.event.findMany({
       where: {
-        isDeleted: false
+        isDeleted: false,
       },
       include: {
         files: {
           select: {
-            path: true
-          }
-        }
-      }
-    })
+            path: true,
+          },
+        },
+      },
+    });
   }
 
   private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS> {
