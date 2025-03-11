@@ -3,10 +3,10 @@ import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import EmailService from '@app/shared/mail/mail.service';
 import { contactUsTemplate } from '@app/shared/mail/template/contact-us.template';
+import { ChatbotService } from '@app/shared/chatbot/chatbot.service';
 import { UserService } from './user.service';
 import { UserDto } from './dto/user.dto';
 import { RatingDto } from './dto/rating.dto';
-import { ChatbotService } from '@app/shared/chatbot/chatbot.service';
 import { ChatDto } from './dto/chat.dto';
 
 @ApiTags('User')
@@ -16,7 +16,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly mailService: EmailService,
     private readonly chatbotService: ChatbotService,
-  ) { }
+  ) {}
 
   @Post()
   @ApiOperation({ description: 'Create user via contact us' })
