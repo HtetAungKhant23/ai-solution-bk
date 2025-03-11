@@ -61,6 +61,17 @@ export class AdminService {
     });
   }
 
+  async deleteEvent(id: string){
+    return this.dbService.event.update({
+      where: {
+        id
+      },
+      data: {
+        isDeleted: true,
+      }
+    })
+  }
+
   private async getEventStatusViaDate(startDate: Date, endDate: Date): Promise<EVENT_STATUS> {
     const isOngoing = dayjs().isAfter(startDate) && dayjs().isBefore(endDate);
     const isPrevious = dayjs().isAfter(endDate);

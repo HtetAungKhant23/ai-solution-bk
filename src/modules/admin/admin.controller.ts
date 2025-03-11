@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentAdmin, IAuthAdmin } from '@app/core/decorators/auth.decorators';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
@@ -16,7 +16,7 @@ export class AdminController {
   constructor(
     private readonly adminService: AdminService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   @Get('me')
   @ApiBearerAuth()
@@ -125,6 +125,31 @@ export class AdminController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch events.',
+      });
+    }
+  }
+
+  @Delete('event/:id')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Delete event' })
+  @ApiParam({ type: 'string', name: 'id' })
+  async deleteEvent(@Param('id') id: string) {
+    try {
+      const deletedEvent = await this.adminService.deleteEvent(id);
+      return {
+        _data: deletedEvent,
+        _metadata: {
+          message: 'Event deleted successfully.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to delete event.',
       });
     }
   }
