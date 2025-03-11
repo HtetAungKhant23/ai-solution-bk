@@ -51,6 +51,9 @@ export class AdminService {
       where: {
         isDeleted: false,
       },
+      orderBy: {
+        startDate: 'asc'
+      },
       include: {
         files: {
           select: {

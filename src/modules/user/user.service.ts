@@ -41,6 +41,9 @@ export class UserService {
       where: {
         isDeleted: false,
       },
+      orderBy: {
+        startDate: 'asc'
+      },
       include: {
         files: {
           select: {
