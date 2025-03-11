@@ -1,5 +1,5 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Controller, Get, HttpStatus, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentAdmin, IAuthAdmin } from '@app/core/decorators/auth.decorators';
 import { AdminService } from './admin.service';
