@@ -52,7 +52,7 @@ export class AdminService {
         isDeleted: false,
       },
       orderBy: {
-        startDate: 'asc'
+        startDate: 'asc',
       },
       include: {
         files: {
