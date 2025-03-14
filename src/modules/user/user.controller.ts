@@ -24,7 +24,6 @@ export class UserController {
   async create(@Body() dto: UserDto) {
     try {
       const newUser = await this.userService.create(dto);
-      console.log(newUser);
       await this.mailService.sendMail({
         from: 'spendwise@gmail.com',
         to: dto.email,
@@ -75,9 +74,7 @@ export class UserController {
   @ApiBody({ type: RatingDto })
   async createRating(@Body() dto: RatingDto) {
     try {
-      console.log(dto);
       const rating = await this.userService.createRating(dto.userId, dto.rating, dto.desc);
-      console.log(rating);
       return {
         _data: rating,
         _metadata: {

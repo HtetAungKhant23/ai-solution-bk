@@ -60,7 +60,6 @@ export class AdminController {
   async getAllUserInquries() {
     try {
       const userInquries = await this.adminService.getAllUserInquries();
-      console.log(userInquries[0]);
       return {
         _data: userInquries,
         _metadata: {
