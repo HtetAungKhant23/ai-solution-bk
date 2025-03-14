@@ -24,12 +24,12 @@ export class AdminService {
     });
   }
 
-  async deletedInquires(id: string){
+  async deletedInquires(id: string) {
     return this.dbService.user.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async createEvent(dto: EventDto, creatorId: string, imgPath: any) {

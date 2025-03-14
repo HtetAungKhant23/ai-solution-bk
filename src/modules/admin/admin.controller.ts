@@ -78,7 +78,6 @@ export class AdminController {
     }
   }
 
-
   @Delete('user-inquries/:id')
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)

@@ -25,7 +25,7 @@ export class UserService {
   }
 
   async createRating(userId: string, rating: number, description: string) {
-    console.log("invoke create rating");
+    console.log('invoke create rating');
     return this.dbService.user.update({
       where: {
         id: userId,
