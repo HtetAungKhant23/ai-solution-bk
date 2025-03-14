@@ -55,11 +55,12 @@ export class AdminController {
 
   @Get('user-inquries')
   @ApiBearerAuth()
-  // @UseGuards(AdminAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ description: 'Create New Event' })
   async getAllUserInquries() {
     try {
       const userInquries = await this.adminService.getAllUserInquries();
+      console.log(userInquries[0]);
       return {
         _data: userInquries,
         _metadata: {
@@ -73,6 +74,32 @@ export class AdminController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch user inquries.',
+      });
+    }
+  }
+
+
+  @Delete('user-inquries/:id')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Delete inquries' })
+  @ApiParam({ type: 'string', name: 'id' })
+  async delete(@Param('id') id: string) {
+    try {
+      const deletedInquires = await this.adminService.deletedInquires(id);
+      return {
+        _data: deletedInquires,
+        _metadata: {
+          message: 'Inquiries deleted successfully.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to delete inquiries.',
       });
     }
   }

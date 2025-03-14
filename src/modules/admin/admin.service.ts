@@ -24,6 +24,14 @@ export class AdminService {
     });
   }
 
+  async deletedInquires(id: string){
+    return this.dbService.user.delete({
+      where: {
+        id
+      }
+    })
+  }
+
   async createEvent(dto: EventDto, creatorId: string, imgPath: any) {
     console.log({ imgPath });
     return this.dbService.event.create({
