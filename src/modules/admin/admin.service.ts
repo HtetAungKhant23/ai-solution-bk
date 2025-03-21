@@ -6,11 +6,10 @@ import { IPagination } from '@app/core/decorators/pagination.decorators';
 import { EventDto } from './dto/event.dto';
 import { UserInquiriesDto } from './dto/user-inquires.dto';
 import { UserInquiriesTotalDto } from './dto/user-inquiries-total.dto';
-import { number } from 'joi';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly dbService: PrismaService) { }
+  constructor(private readonly dbService: PrismaService) {}
 
   async getMe(id: string) {
     return this.dbService.admin.findUnique({
@@ -21,7 +20,7 @@ export class AdminService {
   }
 
   async getAllUserInquriesTotal(dto: UserInquiriesTotalDto) {
-    const [ total, seen, unSeen ] = await Promise.all([
+    const [total, seen, unSeen] = await Promise.all([
       this.dbService.user.count({
         where: {
           ...(dto?.startDate && {
@@ -56,13 +55,13 @@ export class AdminService {
       }),
     ]);
 
-    console.log(total, seen, unSeen)
+    console.log(total, seen, unSeen);
 
     return {
       total,
       seen,
-      unSeen
-    }
+      unSeen,
+    };
   }
 
   async getAllUserInquries(dto: UserInquiriesDto, { limit, offset }: IPagination) {

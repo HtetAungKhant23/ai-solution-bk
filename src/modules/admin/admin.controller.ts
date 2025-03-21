@@ -57,7 +57,6 @@ export class AdminController {
     }
   }
 
-
   @Get('user-inquries/total')
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
