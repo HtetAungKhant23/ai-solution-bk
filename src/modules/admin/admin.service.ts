@@ -29,7 +29,7 @@ export class AdminService {
             gte: dayjs(dto.startDate).toISOString(),
             lte: dayjs(dto.endDate).endOf('date').toISOString(),
           },
-        })
+        }),
       },
     });
 
@@ -45,7 +45,7 @@ export class AdminService {
             gte: dayjs(dto.startDate).toISOString(),
             lte: dayjs(dto.endDate).endOf('date').toISOString(),
           },
-        })
+        }),
       },
       orderBy: {
         createdAt: 'desc',

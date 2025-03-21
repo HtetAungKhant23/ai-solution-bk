@@ -23,8 +23,8 @@ export class UserService {
   async getAllRatings() {
     return this.dbService.user.findMany({
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
   }
 
