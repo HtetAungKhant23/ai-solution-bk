@@ -19,6 +19,17 @@ export class AdminService {
     });
   }
 
+  async updateUserInqurySeenStatus(userId: string){
+    return this.dbService.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        seen: true,
+      }
+    })
+  }
+
   async getAllUserInquriesTotal(dto: UserInquiriesTotalDto) {
     const [total, seen, unSeen] = await Promise.all([
       this.dbService.user.count({
@@ -54,8 +65,6 @@ export class AdminService {
         },
       }),
     ]);
-
-    console.log(total, seen, unSeen);
 
     return {
       total,

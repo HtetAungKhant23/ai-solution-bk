@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -53,6 +54,31 @@ export class AdminController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch me',
+      });
+    }
+  }
+
+  @Put('user-inqury/:id')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Update User Inquiries Seen Status' })
+  @ApiParam({type: 'string', name: 'id'})
+  async updateUserInqurySeenStatus(@Param('id') userId: string) {
+    try {
+      const result = await this.adminService.updateUserInqurySeenStatus(userId);
+      return {
+        _data: result,
+        _metadata: {
+          message: 'User inqury successfully change to read.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to change read user inqury.',
       });
     }
   }
