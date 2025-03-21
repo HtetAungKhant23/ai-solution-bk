@@ -8,7 +8,7 @@ import { UserInquiriesDto } from './dto/user-inquires.dto';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly dbService: PrismaService) { }
+  constructor(private readonly dbService: PrismaService) {}
 
   async getMe(id: string) {
     return this.dbService.admin.findUnique({
@@ -19,17 +19,17 @@ export class AdminService {
   }
 
   async getAllUserInquries(dto: UserInquiriesDto, { limit, offset }: IPagination) {
-    const seen = dto.type === 'seen' ? true : false;
+    const seen = dto.type === 'seen';
 
     const total = await this.dbService.user.count({
       where: {
-        ...(dto.type === 'all' ? {} : {seen})
-      }
+        ...(dto.type === 'all' ? {} : { seen }),
+      },
     });
 
     const userInquires = await this.dbService.user.findMany({
       where: {
-        ...(dto.type === 'all' ? {} : {seen}),
+        ...(dto.type === 'all' ? {} : { seen }),
         country: {
           contains: dto.search,
           mode: 'insensitive',
@@ -48,8 +48,8 @@ export class AdminService {
 
     return {
       userInquires,
-      total
-    }
+      total,
+    };
   }
 
   async deletedInquires(id: string) {
