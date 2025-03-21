@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -18,9 +19,11 @@ import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
+import { IPagination, Pagination } from '@app/core/decorators/pagination.decorators';
 import { EventDto } from './dto/event.dto';
 import { AdminAuthGuard } from '../auth/guard/admin.guard';
 import { AdminService } from './admin.service';
+import { UserInquiriesDto } from './dto/user-inquires.dto';
 
 @ApiTags('Admin')
 @Controller({ version: '1' })
@@ -57,9 +60,9 @@ export class AdminController {
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
   @ApiOperation({ description: 'Create New Event' })
-  async getAllUserInquries() {
+  async getAllUserInquries(@Query() dto: UserInquiriesDto, @Pagination() paginate: IPagination) {
     try {
-      const userInquries = await this.adminService.getAllUserInquries();
+      const userInquries = await this.adminService.getAllUserInquries(dto, paginate);
       return {
         _data: userInquries,
         _metadata: {

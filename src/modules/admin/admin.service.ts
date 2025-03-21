@@ -2,7 +2,9 @@ import { PrismaService } from '@app/shared/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { EVENT_STATUS } from '@prisma/client';
+import { IPagination } from '@app/core/decorators/pagination.decorators';
 import { EventDto } from './dto/event.dto';
+import { UserInquiriesDto } from './dto/user-inquires.dto';
 
 @Injectable()
 export class AdminService {
@@ -16,11 +18,23 @@ export class AdminService {
     });
   }
 
-  async getAllUserInquries() {
+  async getAllUserInquries(dto: UserInquiriesDto, { limit, offset }: IPagination) {
     return this.dbService.user.findMany({
+      where: {
+        country: {
+          contains: dto.search,
+          mode: 'insensitive',
+        },
+        createdAt: {
+          gte: dayjs(dto.startDate).toISOString(),
+          lte: dayjs(dto.endDate).toISOString(),
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },
+      take: limit,
+      skip: offset,
     });
   }
 

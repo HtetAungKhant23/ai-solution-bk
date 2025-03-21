@@ -17,17 +17,14 @@ export function createDocument(app: INestApplication) {
   const options = builder.build();
   const username = configService.get<string>('swagger.username') ?? 'username';
   const password = configService.get<string>('swagger.password') ?? 'password';
-  const appMode = configService.get<string>('app.mode');
-  // console.log(appMode)
-  if (appMode !== 'production') {
-    app.use(
-      '/docs',
-      basicAuth({
-        challenge: true,
-        users: { [username]: password },
-      }),
-    );
-  }
+  app.use(
+    '/docs',
+    basicAuth({
+      challenge: true,
+      users: { [username]: password },
+    }),
+  );
+
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 }
