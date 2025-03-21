@@ -1,7 +1,7 @@
 import { PaginationDto } from '@app/core/dtos/pagination.dto';
 import { SearchDto } from '@app/core/dtos/search.dto';
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { IsIn, IsNotEmpty } from 'class-validator';
+import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UserInquiriesDto extends IntersectionType(PaginationDto, SearchDto) {
   @ApiProperty()
@@ -10,10 +10,10 @@ export class UserInquiriesDto extends IntersectionType(PaginationDto, SearchDto)
   type: 'all' | 'seen' | 'unSeen';
 
   @ApiProperty()
-  @IsNotEmpty()
-  startDate: Date;
+  @IsOptional()
+  startDate?: Date;
 
   @ApiProperty()
-  @IsNotEmpty()
-  endDate: Date;
+  @IsOptional()
+  endDate?: Date;
 }

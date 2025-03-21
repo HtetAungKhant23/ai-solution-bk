@@ -24,20 +24,28 @@ export class AdminService {
     const total = await this.dbService.user.count({
       where: {
         ...(dto.type === 'all' ? {} : { seen }),
+        ...(dto?.startDate && {
+          createdAt: {
+            gte: dayjs(dto.startDate).toISOString(),
+            lte: dayjs(dto.endDate).endOf('date').toISOString(),
+          },
+        })
       },
     });
 
-    const userInquires = await this.dbService.user.findMany({
+    const data = await this.dbService.user.findMany({
       where: {
         ...(dto.type === 'all' ? {} : { seen }),
         country: {
           contains: dto.search,
           mode: 'insensitive',
         },
-        createdAt: {
-          gte: dayjs(dto.startDate).toISOString(),
-          lte: dayjs(dto.endDate).toISOString(),
-        },
+        ...(dto?.startDate && {
+          createdAt: {
+            gte: dayjs(dto.startDate).toISOString(),
+            lte: dayjs(dto.endDate).endOf('date').toISOString(),
+          },
+        })
       },
       orderBy: {
         createdAt: 'desc',
@@ -47,7 +55,7 @@ export class AdminService {
     });
 
     return {
-      userInquires,
+      data,
       total,
     };
   }

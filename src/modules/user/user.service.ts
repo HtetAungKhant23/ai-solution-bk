@@ -21,7 +21,11 @@ export class UserService {
   }
 
   async getAllRatings() {
-    return this.dbService.user.findMany();
+    return this.dbService.user.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
   }
 
   async createRating(userId: string, rating: number, description: string) {
