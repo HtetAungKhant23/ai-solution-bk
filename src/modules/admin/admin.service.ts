@@ -19,15 +19,15 @@ export class AdminService {
     });
   }
 
-  async updateUserInqurySeenStatus(userId: string){
+  async updateUserInqurySeenStatus(userId: string) {
     return this.dbService.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
         seen: true,
-      }
-    })
+      },
+    });
   }
 
   async getAllUserInquriesTotal(dto: UserInquiriesTotalDto) {

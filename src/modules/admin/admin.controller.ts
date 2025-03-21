@@ -62,7 +62,7 @@ export class AdminController {
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
   @ApiOperation({ description: 'Update User Inquiries Seen Status' })
-  @ApiParam({type: 'string', name: 'id'})
+  @ApiParam({ type: 'string', name: 'id' })
   async updateUserInqurySeenStatus(@Param('id') userId: string) {
     try {
       const result = await this.adminService.updateUserInqurySeenStatus(userId);
