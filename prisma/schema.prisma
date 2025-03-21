@@ -17,6 +17,7 @@ model User {
   jobTitle    String  @map("job_title")
   jobDetail   String  @map("job_detail")
   rating      Int     @default(0)
+  seen        Boolean @default(false)
   ratingDesc  String?
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -41,15 +42,15 @@ model Admin {
 }
 
 model Event {
-  id            String       @id @default(uuid())
-  name          String
-  detail        String
-  startDate     DateTime     @map("start_date")
-  endDate       DateTime     @map("end_date")
-  status        EVENT_STATUS @default(UPCOMING)
+  id           String       @id @default(uuid())
+  name         String
+  detail       String
+  startDate    DateTime     @map("start_date")
+  endDate      DateTime     @map("end_date")
+  status       EVENT_STATUS @default(UPCOMING)
   organization String
-  createdById   String
-  createdBy     Admin        @relation(fields: [createdById], references: [id])
+  createdById  String
+  createdBy    Admin        @relation(fields: [createdById], references: [id])
 
   isDeleted Boolean @default(false)
 

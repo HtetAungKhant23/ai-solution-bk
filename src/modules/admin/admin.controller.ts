@@ -59,12 +59,12 @@ export class AdminController {
   @Get('user-inquries')
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
-  @ApiOperation({ description: 'Create New Event' })
+  @ApiOperation({ description: 'Get All User Inquiries' })
   async getAllUserInquries(@Query() dto: UserInquiriesDto, @Pagination() paginate: IPagination) {
     try {
-      const userInquries = await this.adminService.getAllUserInquries(dto, paginate);
+      const result = await this.adminService.getAllUserInquries(dto, paginate);
       return {
-        _data: userInquries,
+        _data: result,
         _metadata: {
           message: 'User inquries successfully fetched.',
           statusCode: HttpStatus.OK,
