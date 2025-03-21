@@ -5,10 +5,12 @@ import { EVENT_STATUS } from '@prisma/client';
 import { IPagination } from '@app/core/decorators/pagination.decorators';
 import { EventDto } from './dto/event.dto';
 import { UserInquiriesDto } from './dto/user-inquires.dto';
+import { UserInquiriesTotalDto } from './dto/user-inquiries-total.dto';
+import { number } from 'joi';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly dbService: PrismaService) {}
+  constructor(private readonly dbService: PrismaService) { }
 
   async getMe(id: string) {
     return this.dbService.admin.findUnique({
@@ -16,6 +18,51 @@ export class AdminService {
         id,
       },
     });
+  }
+
+  async getAllUserInquriesTotal(dto: UserInquiriesTotalDto) {
+    const [ total, seen, unSeen ] = await Promise.all([
+      this.dbService.user.count({
+        where: {
+          ...(dto?.startDate && {
+            createdAt: {
+              gte: dayjs(dto.startDate).toISOString(),
+              lte: dayjs(dto.endDate).endOf('date').toISOString(),
+            },
+          }),
+        },
+      }),
+      this.dbService.user.count({
+        where: {
+          seen: true,
+          ...(dto?.startDate && {
+            createdAt: {
+              gte: dayjs(dto.startDate).toISOString(),
+              lte: dayjs(dto.endDate).endOf('date').toISOString(),
+            },
+          }),
+        },
+      }),
+      this.dbService.user.count({
+        where: {
+          seen: false,
+          ...(dto?.startDate && {
+            createdAt: {
+              gte: dayjs(dto.startDate).toISOString(),
+              lte: dayjs(dto.endDate).endOf('date').toISOString(),
+            },
+          }),
+        },
+      }),
+    ]);
+
+    console.log(total, seen, unSeen)
+
+    return {
+      total,
+      seen,
+      unSeen
+    }
   }
 
   async getAllUserInquries(dto: UserInquiriesDto, { limit, offset }: IPagination) {

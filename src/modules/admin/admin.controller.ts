@@ -24,6 +24,7 @@ import { EventDto } from './dto/event.dto';
 import { AdminAuthGuard } from '../auth/guard/admin.guard';
 import { AdminService } from './admin.service';
 import { UserInquiriesDto } from './dto/user-inquires.dto';
+import { UserInquiriesTotalDto } from './dto/user-inquiries-total.dto';
 
 @ApiTags('Admin')
 @Controller({ version: '1' })
@@ -52,6 +53,31 @@ export class AdminController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch me',
+      });
+    }
+  }
+
+
+  @Get('user-inquries/total')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Get All User Inquiries Total' })
+  async getAllUserInquriesTotal(@Query() dto: UserInquiriesTotalDto) {
+    try {
+      const result = await this.adminService.getAllUserInquriesTotal(dto);
+      return {
+        _data: result,
+        _metadata: {
+          message: 'User inquries total successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch user inquries total.',
       });
     }
   }
