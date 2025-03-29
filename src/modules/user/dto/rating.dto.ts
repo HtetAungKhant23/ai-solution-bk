@@ -5,7 +5,7 @@ export class RatingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  userId: string;
+  name: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -15,5 +15,5 @@ export class RatingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  desc: string;
+  feedback: string;
 }

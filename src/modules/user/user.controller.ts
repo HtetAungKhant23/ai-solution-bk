@@ -38,6 +38,7 @@ export class UserController {
         },
       };
     } catch (err) {
+      console.log(err);
       throw new BadRequestException({
         message: err.message,
         cause: new Error(err),
@@ -74,7 +75,7 @@ export class UserController {
   @ApiBody({ type: RatingDto })
   async createRating(@Body() dto: RatingDto) {
     try {
-      const rating = await this.userService.createRating(dto.userId, dto.rating, dto.desc);
+      const rating = await this.userService.createRating(dto.name, dto.rating, dto.feedback);
       return {
         _data: rating,
         _metadata: {
@@ -110,6 +111,28 @@ export class UserController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch events.',
+      });
+    }
+  }
+
+  @Get('blogs')
+  @ApiOperation({ description: 'Get All Blogs' })
+  async getAllBlogs() {
+    try {
+      const blogs = await this.userService.getAllBlogs();
+      return {
+        _data: blogs,
+        _metadata: {
+          message: 'Blogs successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch blogs.',
       });
     }
   }

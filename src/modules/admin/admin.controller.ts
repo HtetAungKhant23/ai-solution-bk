@@ -21,11 +21,14 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
 import { IPagination, Pagination } from '@app/core/decorators/pagination.decorators';
+import { PaginationDto } from '@app/core/dtos/pagination.dto';
 import { EventDto } from './dto/event.dto';
 import { AdminAuthGuard } from '../auth/guard/admin.guard';
 import { AdminService } from './admin.service';
 import { UserInquiriesDto } from './dto/user-inquires.dto';
 import { UserInquiriesTotalDto } from './dto/user-inquiries-total.dto';
+import { UserInquiriesExcelDto } from './dto/user-inquiries-excel.dto';
+import { BlogDto } from './dto/blog.dto';
 
 @ApiTags('Admin')
 @Controller({ version: '1' })
@@ -34,6 +37,30 @@ export class AdminController {
     private readonly adminService: AdminService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
+
+  @Get('ratings')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Get All Ratings' })
+  async getAllRatings(@Query() dto: PaginationDto, @Pagination() paginate: IPagination) {
+    try {
+      const data = await this.adminService.getAllRatings(paginate);
+      return {
+        _data: data,
+        _metadata: {
+          message: 'Ratings successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch ratings.',
+      });
+    }
+  }
 
   @Get('me')
   @ApiBearerAuth()
@@ -131,6 +158,31 @@ export class AdminController {
     }
   }
 
+  @Post('user-inquries/excel')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Export User Inquiries Excel' })
+  async excelExportUserInquries(@Query() dto: UserInquiriesExcelDto) {
+    try {
+      const data = await this.adminService.excelExportUserInquries(dto);
+      const path = await this.cloudinaryService.uploadFile(data.excelFileName, data.buffer, 'inquiries');
+      return {
+        _data: path,
+        _metadata: {
+          message: 'User inquries excel successfully exported.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to export user inquries excel.',
+      });
+    }
+  }
+
   @Delete('user-inquries/:id')
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
@@ -200,11 +252,11 @@ export class AdminController {
   @ApiBearerAuth()
   @UseGuards(AdminAuthGuard)
   @ApiOperation({ description: 'Get All Events' })
-  async getAllEvents() {
+  async getAllEvents(@Query() dto: PaginationDto, @Pagination() paginate: IPagination) {
     try {
-      const events = await this.adminService.getAllEvents();
+      const data = await this.adminService.getAllEvents(paginate);
       return {
-        _data: events,
+        _data: data,
         _metadata: {
           message: 'Events successfully fetched.',
           statusCode: HttpStatus.OK,
@@ -241,6 +293,97 @@ export class AdminController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to delete event.',
+      });
+    }
+  }
+
+  @Post('blog')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ description: 'Create event' })
+  @ApiBody({ type: BlogDto })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_, file, cb) => {
+          return cb(null, `${uuidv4()}.${file.originalname}`);
+        },
+      }),
+    }),
+  )
+  async createBlog(@Body() dto: BlogDto, @UploadedFile() file: Express.Multer.File, @CurrentAdmin() admin: IAuthAdmin) {
+    try {
+      let path;
+      if (file) {
+        path = await this.cloudinaryService.uploadImage(file.path, 'blog');
+      }
+      console.log(path);
+      const newBlog = await this.adminService.createBlog(dto, admin.id, path || undefined);
+      return {
+        _data: newBlog,
+        _metadata: {
+          message: 'Blog saved successfully.',
+          statusCode: HttpStatus.CREATED,
+        },
+      };
+    } catch (err) {
+      console.log(err);
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to save new blog.',
+      });
+    }
+  }
+
+  @Get('blogs')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Get All Blogs' })
+  async getAllBlogs(@Query() dto: PaginationDto, @Pagination() paginate: IPagination) {
+    try {
+      const data = await this.adminService.getAllBlogs(paginate);
+      return {
+        _data: data,
+        _metadata: {
+          message: 'Blogs successfully fetched.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch blogs.',
+      });
+    }
+  }
+
+  @Delete('blog/:id')
+  @ApiBearerAuth()
+  @UseGuards(AdminAuthGuard)
+  @ApiOperation({ description: 'Delete Blog' })
+  @ApiParam({ type: 'string', name: 'id' })
+  async deleteBlog(@Param('id') id: string) {
+    try {
+      const deletedBlog = await this.adminService.deleteBlog(id);
+      return {
+        _data: deletedBlog,
+        _metadata: {
+          message: 'Blog deleted successfully.',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to delete blog.',
       });
     }
   }

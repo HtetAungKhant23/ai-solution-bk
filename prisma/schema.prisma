@@ -16,9 +16,7 @@ model User {
   country     String
   jobTitle    String  @map("job_title")
   jobDetail   String  @map("job_detail")
-  rating      Int     @default(0)
   seen        Boolean @default(false)
-  ratingDesc  String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -37,6 +35,7 @@ model Admin {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   events    Event[]
+  blogs     Blog[]
 
   @@map("admins")
 }
@@ -61,11 +60,29 @@ model Event {
   @@map("events")
 }
 
+model Blog {
+  id          String @id @default(uuid())
+  title       String
+  body        String
+  createdById String
+  createdBy   Admin  @relation(fields: [createdById], references: [id])
+
+  isDeleted Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  files     File[]
+
+  @@map("blogs")
+}
+
 model File {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   path    String
-  eventId String
-  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id])
+  blogId  String?
+  Blog    Blog?   @relation(fields: [blogId], references: [id])
 
   isDeleted Boolean @default(false)
 
@@ -73,6 +90,18 @@ model File {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("files")
+}
+
+model Rating {
+  id       String @id @default(uuid())
+  ratedBy  String
+  feedback String
+  rate     Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("ratings")
 }
 
 enum EVENT_STATUS {

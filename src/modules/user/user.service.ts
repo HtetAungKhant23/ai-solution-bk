@@ -21,21 +21,19 @@ export class UserService {
   }
 
   async getAllRatings() {
-    return this.dbService.user.findMany({
+    return this.dbService.rating.findMany({
       orderBy: {
         createdAt: 'desc',
       },
     });
   }
 
-  async createRating(userId: string, rating: number, description: string) {
-    return this.dbService.user.update({
-      where: {
-        id: userId,
-      },
+  async createRating(name: string, rating: number, feedback: string) {
+    return this.dbService.rating.create({
       data: {
-        rating,
-        ratingDesc: description,
+        ratedBy: name,
+        rate: rating,
+        feedback,
       },
     });
   }
@@ -47,6 +45,24 @@ export class UserService {
       },
       orderBy: {
         startDate: 'asc',
+      },
+      include: {
+        files: {
+          select: {
+            path: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getAllBlogs() {
+    return this.dbService.blog.findMany({
+      where: {
+        isDeleted: false,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
       include: {
         files: {
