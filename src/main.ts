@@ -9,8 +9,13 @@ import { NestFactory } from '@nestjs/core';
 import * as cluster from 'cluster';
 import { WinstonModule } from 'nest-winston';
 import * as os from 'os';
+import * as dotenv from 'dotenv';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+
+dotenv.config();
+
+console.log('from env ', process.env.PORT, process.env.NODE_ENV);
 
 const logger = new Logger('bootstrap');
 async function bootstrap() {
