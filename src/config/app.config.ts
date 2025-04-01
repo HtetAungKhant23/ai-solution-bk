@@ -4,7 +4,7 @@ import { registerAs } from '@nestjs/config';
 export default registerAs(
   'app',
   (): Record<string, any> => ({
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3003,
     mode: process.env.NODE_ENV || NodeEnv.DEVELOPMENT,
     dbUrl: process.env.DATABASE_URL,
     globalPrefix: process.env.API_PREFIX,
